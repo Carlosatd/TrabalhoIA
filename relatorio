@@ -1,0 +1,58 @@
+1. Naive Bayes utilizando somente a base de dados original.
+
+Scheme:weka.classifiers.bayes.NaiveBayes 
+Instances:    4601 
+Attributes:   58
+Correctly Classified Instances        3648               79.2871 %
+Incorrectly Classified Instances       953               20.7129 %
+
+Base de dados original: spambase.data
+Saida: classifier-output-naivebayes1
+
+
+2. A partir da base de dados original, fizemos uma seleção de atributos e geramos uma nova base de dados com 48 atributos.
+
+PrincipalComponents
+
+Base gerada: spambase2-principal-components
+
+3. Aplicamos o mesmo algoritmo do passo 1 (Naive Bayes) utilizando a base de dados gerada último passo:
+
+Scheme:weka.classifiers.bayes.NaiveBayes 
+Instances:    4601
+Attributes:   49
+Correctly Classified Instances        3981               86.5247 %
+Incorrectly Classified Instances       620               13.4753 %
+
+Saida: classifier-output-naivebayes2
+
+
+4. Iremos gerar clusters e adicionar esses novos atributos a base de dados original, gerando assim uma terceira base de dados.
+
+
+FilteredClusterer 
+Instances:    4601
+Attributes:   58
+
+
+Clustered Instances
+0      1813 ( 39%)
+1      2788 ( 61%)
+
+Saída: clusterer-output1
+Nova base gerada: spambase3-cluster.arff
+
+5. Aplicamos o mesmo algoritmo do passo 1 (Naive Bayes) utilizando a base de dados gerada último passo:
+
+Scheme:weka.classifiers.bayes.NaiveBayes 
+Relation:     spambase_clustered
+Instances:    4601
+Attributes:   60
+
+Correctly Classified Instances        3873               84.1774 %
+Incorrectly Classified Instances       728               15.8226 %
+
+Saida: classifier-output-naivebayes-com-cluster
+
+Comparação:
+Usando somente o Naive Bayes e a base de dados original obtivemos um desempenho de 79.2871 % de instâncias classificadas corretamente. Ao aplicar o PrincipalComponents geramos uma nova base de dados com menos atributos, deixando somente os atributos “mais importantes” e ao aplicarmos o mesmo Naive Bayes percebemos que o desempenho melhorou para 86.5247 % de acerto nas instâncias classificadas. Durante esses testes a clusterização não ajudou muito, pois notamos que depois de adicionar a clusterização, o desempenho caiu para 84.1774 % de instâncias classificadas corretamente.
