@@ -2,7 +2,7 @@
 
 :-dynamic datashow/2.
 :-dynamic computador/2.
-:-dynamic ar(_,desligado).
+:-dynamic ar/2.
 :-dynamic esta/2.
 
 sala(s1).
@@ -21,6 +21,7 @@ aula(marcos,s2, 20, 22).
 usa_datashow(aline).
 usa_computador(aline).
 usa_computador(marcos).
+usa_computador(martinhon).
 usa_ar(rosseti).
 usa_ar(aline).
 usa_ar(marcos).
@@ -31,37 +32,34 @@ esta_na_faculdade(X):-esta(X,uff),write_ln('professor esta na uff').
 esta_na_faculdade(X):-esta(X,casa),write_ln('professor nao esta na uff').
 
 %professor da aula em determinado horario
-dar_aula(X,Y):- sala_aberta(X,Y),retract(esta(X,_)),assert(esta(X,aula)),usa_aparelhos(X).
+dar_aula(X,Y):- sala_aberta(X,Y),esta(X,uff)->(retract(esta(X,_)),assert(esta(X,aula)),usa_aparelhos(X)); write('não é possivel ter aula').
 sala_aberta(X,Y):- esta_na_faculdade(X),aula(X,_,Y,_),write_ln('aula').
 sala_aberta(X,Y):- esta_na_faculdade(X),\+ aula(X,_,Y,_), write_ln('professor nao tem aula agora').
 sala_aberta(X,Y):- \+ esta_na_faculdade(X), write_ln('professor nao esta em sala').
 
 
 %ligar os aparelhos de acordo com o professor
-usa_aparelhos(X):-liga_ar(X);liga_computador(X);liga_datashow(X);!.
-usa_aparelhos(X):-liga_ar(X),liga_computador(X),!.
-usa_aparelhos(X):- \+liga_ar(X); liga_computador(X);liga_datashow(X),!.
-usa_aparelhos(X):- \+liga_ar(X);\+ liga_computador(X); \+ liga_datashow(X); white_ln('nao usa nada'),!.
+usa_aparelhos(X):-(usa_ar(X)->liga_ar(X);write_ln('ar desligado')),(usa_computador(X)->liga_computador(X);write_ln('pc desligado')),(usa_datashow(X)->liga_datashow(X);write_ln('datashow desligado')),!.
 
-
-liga_ar(X):-usa_ar(X),assert(ar(X,ligado)), write_ln('ar ligado').
-liga_computador(X):-usa_computador(X),assert(computador(X,ligado)),write_ln('computador ligado').
-liga_datashow(X):-usa_datashow(X),assert(datashow(X,ligado)),write_ln('usa datashow').
+liga_ar(X):-assert(ar(X,ligado)), write_ln('ar ligado').
+liga_computador(X):-assert(computador(X,ligado)),write_ln('computador ligado').
+liga_datashow(X):-assert(datashow(X,ligado)),write_ln('datashow ligado').
 
 
 
 %desligar aparelhos
-desliga_aparelhos(X):-usa_ar(X),assert(ar(X,desliga)),usa_computador(X),assert(computador(X,desliga)),usa_datashow(X),assert(datashow(X,desliga)),write_ln('datashow, computador e ar desligados').
-%desliga_aparelhos(X):-\+ usa_ar(X),usa_computador(X),assert(computador(X,desliga)),usa_datashow(X),assert(datashow(X,desliga)),write_ln('datashow e computador desligados').
-%desliga_aparelhos(X):-\+ usa_ar(X),usa_computador(X),assert(computador(X,desliga)),\+ usa_datashow(X),write_ln('computador desligado').
-%desliga_aparelhos(X):- usa_ar(X),\+ usa_computador(X),\+usa_datashow(X),write_ln('ar desligado').
+desliga_aparelhos(X):-(usa_ar(X)->desliga_ar(X);write_ln('ar não está ligado')),(usa_computador(X)->desliga_computador(X);write_ln('pc nao está ligado')),(usa_datashow(X)->desliga_datashow(X);write_ln('datashow não está ligado')),!.
+
+desliga_ar(X):-retract(ar(X,ligado)),assert(ar(X,desligado)), write_ln('ar desligado').
+desliga_computador(X):-retract(computador(X,ligado)),assert(computador(X,desligado)),write_ln('computador desligado').
+desliga_datashow(X):-retrac(datashow(X,ligado)),assert(datashow(X,desligado)),write_ln('datashow desligado').
+
+
+
 
 %terminar a aula
-%terminar_aula(X,Y):- esta(X,aula),aula(X,_,_,Y),desliga_aparelhos(X),write_ln('fim da aula').
+%terminar_aula(X,Y):- (esta(X,aula),aula(X,_,_,Y))->(desliga_aparelhos(X),write_ln('fim da aula'));write_ln('não esta em aula').
 %terminar_aula(X,Y):-\+ esta(X,aula), write_ln('professor nao esta dando aula').
 
 
-%cod antigo inutilizado
-%liga_aparelhos(X,Y):-sala_aberta(X,Y),\+liga_datashow(X);\+usa_computador(X);\+usa_ar(X).
-%liga_datashow(X):-\+usa_datashow(X);assert(datashow(X,ligado)).
-%ar_ligado(X):- \+usa_ar(X).
+%erros encontrados: varias notificações de professor nao esta na uff, professor dando aula fora do horario.
