@@ -54,7 +54,7 @@ desliga_computador(X):-retract(computador(X,ligado)),assert(computador(X,desliga
 desliga_datashow(X):-retrac(datashow(X,ligado)),assert(datashow(X,desligado)),write_ln('datashow desligado').
 
 %terminar a aula
-terminar_aula(X,Y):- (esta(X,aula),aula(X,S,_,Y))->(retract(S,X),desliga_aparelhos(X),write_ln('fim da aula'));write_ln('não esta em aula').
+terminar_aula(X,Y):- (esta(X,aula),aula(X,S,_,Y))->(retract(ocupada(S,X)),desliga_aparelhos(X),write_ln('fim da aula'));write_ln('não esta em aula').
 
 
 %erros encontrados: varias notificações de professor nao esta na uff, professor dando aula fora do horario.
