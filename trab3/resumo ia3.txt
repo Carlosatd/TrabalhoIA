@@ -1,0 +1,9 @@
+Para facilitar a programação, colocamos algumas variáveis como dynamic, para que pudessem ser criadas e ou executadas
+em tempo de compilaçao
+
+No codigo temos observações para as areas princiais da base de dados, a região dos professores, aonde eles estão no momento
+que horas chegam e vão embora, quando ministram aulas e suas preferencias quanto a aparelhos.
+
+consideramos que abrir sala so pode ser realizado se o professor estiver em sala, e analogamente o terminar
+
+por final, para podermos demonstrar melhor como funciona, implementamos um algotmo que simula um dia normal.
