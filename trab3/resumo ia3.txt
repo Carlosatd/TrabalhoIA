@@ -11,8 +11,3 @@ por final, para podermos demonstrar melhor como funciona, implementamos um algot
 Utilizando a clausula(regra) dia(H), sendo h um horario inicial, sera feita uma varredura controlada da base de dados relacionados ao tempo dos professores, desde H horas(melhor h=7) até 24.
 
 utilizando as clausulas separadas dar_aula(X,Y), sendo X um professor e Y um horario inicial vai ser uma busca na base de dados verificando se é possivel que esta aula seja dada.
-
-
-mudar: ar (SALA, HORARIO), liga_ar, delisga_ar.
-colocar findall
-

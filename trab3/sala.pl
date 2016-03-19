@@ -59,28 +59,28 @@ usa_ar(teste).
 esta_na_faculdade(X):-esta(X,uff)-> write(X),write_ln(' esta na uff');esta(X,aula)->write(X),write_ln(' esta em aula');write(X),write_ln(' não está na uff').
 
 %professor da aula em determinado horario
-dar_aula(X,Y):- sala_aberta(X,Y) ->(esta(X,uff)->(retract(esta(X,_)),assert(esta(X,aula)),write('aula do(a) '),write_ln(X),usa_aparelhos(X));write_ln('professor nao tem aula agora')); write_ln('não é possivel ter aula').
+dar_aula(X,Y):- sala_aberta(X,Y) ->(esta(X,uff)->(retract(esta(X,_)),assert(esta(X,aula)),write('aula do(a) '),write_ln(X),usa_aparelhos(X),(usa_ar(X)->liga_ar(S);write_ln('ar foi ligado')));write_ln('professor nao tem aula agora')); write_ln('não é possivel ter aula').
 sala_aberta(X,Y):- (esta_na_faculdade(X),aula(X,S,Y,_)) -> esta_ocupada(X,S) ; write_ln('professor não tem aula nesse horario'),fail.
 
 %ligar os aparelhos de acordo com o professor
-usa_aparelhos(X):-(usa_ar(X)->liga_ar(X);write_ln('ar foi ligado')),(usa_computador(X)->liga_computador(X);write_ln('pc não foi ligado')),(usa_datashow(X)->liga_datashow(X);write_ln('datashow não foi ligado')),!.
+usa_aparelhos(X):-(usa_computador(X)->liga_computador(X);write_ln('pc não foi ligado')),(usa_datashow(X)->liga_datashow(X);write_ln('datashow não foi ligado')),!.
 
-liga_ar(X):-assert(ar(X,ligado)), write_ln('ar ligado').
+liga_ar(S):-assert(ar(S,ligado)), write_ln('ar ligado').
 liga_computador(X):-assert(computador(X,ligado)),write_ln('computador ligado').
 liga_datashow(X):-assert(datashow(X,ligado)),write_ln('datashow ligado').
 
 %verificar se a sala esta ocupada
-esta_ocupada(X,S):- ocupada(S,X)->write_ln('sala ocupada'), fail;assert(ocupada(S,X)).
+esta_ocupada(X,S):- ocupada(S,_)->(write_ln('sala ocupada'), fail);assert(ocupada(S,X)).
 
 %desligar aparelhos
-desliga_aparelhos(X):-(usa_ar(X)->desliga_ar(X);write_ln('ar não está ligado')),(usa_computador(X)->desliga_computador(X);write_ln('pc nao está ligado')),(usa_datashow(X)->desliga_datashow(X);write_ln('datashow não está ligado')),!.
+desliga_aparelhos(X):-(usa_computador(X)->desliga_computador(X);write_ln('pc nao está ligado')),(usa_datashow(X)->desliga_datashow(X);write_ln('datashow não está ligado')),!.
 
-desliga_ar(X):-retract(ar(X,ligado)),assert(ar(X,desligado)), write_ln('ar desligado').
+desliga_ar(S):-retract(ar(S,ligado)),assert(ar(S,desligado)), write_ln('ar desligado').
 desliga_computador(X):-retract(computador(X,ligado)),assert(computador(X,desligado)),write_ln('computador desligado').
 desliga_datashow(X):-retract(datashow(X,ligado)),assert(datashow(X,desligado)),write_ln('datashow desligado').
 
 %terminar a aula
-terminar_aula(X,Y):-(esta(X,aula),aula(X,S,_,Y))->(retract(ocupada(S,X)),write('fim da aula do(a)'),write_ln(X),desliga_aparelhos(X),retract(esta(X,_)),assert(esta(X,uff));write_ln('não esta em aula').
+terminar_aula(X,Y):-(esta(X,aula),aula(X,S,_,Y))->(retract(ocupada(S,X)),write('fim da aula do(a)'),write_ln(X),desliga_aparelhos(X),(usa_ar(X)->desliga_ar(S));write_ln('ar não está ligado'),retract(esta(X,_)),assert(esta(X,uff)));write_ln('não esta em aula').
 
 
 %buscas
